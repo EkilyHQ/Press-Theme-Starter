@@ -8,14 +8,14 @@
   "release": {
     "tag": "v0.1.0",
     "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Starter/releases/tag/v0.1.0",
-    "publishedAt": "2026-05-07T00:00:00Z",
+    "publishedAt": "2026-05-06T21:47:21Z",
     "notes": ""
   },
   "asset": {
     "name": "press-theme-starter-v0.1.0.zip",
     "url": "https://raw.githubusercontent.com/EkilyHQ/Press-Theme-Starter/release-artifacts/v0.1.0/press-theme-starter-v0.1.0.zip",
-    "size": 0,
-    "digest": "sha256:replace-with-release-digest"
+    "size": 3402,
+    "digest": "sha256:fc8a4f88d711562c0924de4efc12462c33fdcb2bf85185cfcb01c695e5b397a9"
   },
   "files": [
     "modules/starter.js",
