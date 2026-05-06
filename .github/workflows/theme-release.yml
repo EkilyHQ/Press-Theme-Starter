@@ -1,0 +1,310 @@
+name: Theme Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'theme/**'
+      - 'theme-repo.json'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Optional release tag, for example v0.2.0. Leave empty to bump patch.
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: theme-release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'Update theme release manifest')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REQUESTED_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || '' }}
+    steps:
+      - name: Checkout theme
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read theme repository config
+        id: config
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const config = JSON.parse(fs.readFileSync('theme-repo.json', 'utf8'));
+          const slug = String(config.slug || '').trim();
+          const label = String(config.label || '').trim();
+          if (!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(slug)) {
+            console.error('theme-repo.json slug must match [a-z0-9][a-z0-9_-]* and be at most 64 characters');
+            process.exit(2);
+          }
+          if (!label || /[\r\n]/.test(label)) {
+            console.error('theme-repo.json label must be a non-empty single line');
+            process.exit(2);
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `slug=${slug}\nlabel=${label}\n`);
+          NODE
+
+      - name: Plan release
+        id: plan
+        run: |
+          set -euo pipefail
+          git fetch --tags --force
+
+          latest_tag="$(gh release view --json tagName -q '.tagName' 2>/dev/null || true)"
+          if [[ -z "${latest_tag}" ]]; then
+            latest_tag="$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1 || true)"
+          fi
+
+          requested_tag="${REQUESTED_TAG:-}"
+          if [[ -n "${requested_tag}" ]]; then
+            next_tag="${requested_tag}"
+          elif [[ "${latest_tag}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+            next_tag="v${major}.${minor}.$((patch + 1))"
+          else
+            version="$(node -p "require('./theme/theme.json').version || '0.1.0'")"
+            next_tag="v${version}"
+          fi
+
+          if [[ ! "${next_tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "tag must be vMAJOR.MINOR.PATCH" >&2
+            exit 2
+          fi
+
+          if [[ -z "${requested_tag}" && -n "${latest_tag}" ]]; then
+            changed_files="$(git diff --name-only "${latest_tag}..HEAD" -- theme theme-repo.json)"
+            if [[ -z "${changed_files}" ]]; then
+              {
+                echo "should_release=false"
+                echo "latest_tag=${latest_tag}"
+              } >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+          fi
+
+          if gh release view "${next_tag}" >/dev/null 2>&1; then
+            echo "release ${next_tag} already exists" >&2
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/${next_tag}" >/dev/null 2>&1; then
+            echo "remote tag ${next_tag} already exists" >&2
+            exit 1
+          fi
+
+          {
+            echo "should_release=true"
+            echo "latest_tag=${latest_tag}"
+            echo "next_tag=${next_tag}"
+            echo "version=${next_tag#v}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Prepare release version
+        if: steps.plan.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'theme/theme.json';
+          const version = process.env.VERSION;
+          const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
+          manifest.version = version;
+          fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
+          NODE
+
+      - name: Checkout Press checks
+        if: steps.plan.outputs.should_release == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: EkilyHQ/Press
+          path: .press
+
+      - name: Validate theme contract
+        if: steps.plan.outputs.should_release == 'true'
+        env:
+          THEME_SLUG: ${{ steps.config.outputs.slug }}
+        run: |
+          set -euo pipefail
+          slug="${THEME_SLUG}"
+          rm -rf ".press/assets/themes/${slug}"
+          mkdir -p ".press/assets/themes/${slug}"
+          rsync -a ./theme/ ".press/assets/themes/${slug}/"
+          cd .press
+          node --experimental-default-type=module scripts/test-theme-contracts.js
+
+      - name: Package theme
+        if: steps.plan.outputs.should_release == 'true'
+        id: package
+        env:
+          THEME_TAG: ${{ steps.plan.outputs.next_tag }}
+          THEME_SLUG: ${{ steps.config.outputs.slug }}
+          RELEASE_VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          set -euo pipefail
+          tag="${THEME_TAG}"
+          slug="${THEME_SLUG}"
+          version="${RELEASE_VERSION}"
+          asset="press-theme-${slug}-${tag}.zip"
+          mkdir -p dist "press-theme-${slug}"
+          rsync -a ./theme/ "press-theme-${slug}/"
+          theme_version="$(node -p 'require("./theme/theme.json").version || ""')"
+          if [[ "${theme_version}" != "${version}" ]]; then
+            echo "theme/theme.json version ${theme_version:-'(missing)'} does not match ${version}" >&2
+            exit 2
+          fi
+          find "press-theme-${slug}" -type f | sort | sed "s#^press-theme-${slug}/##" > dist/files.txt
+          zip -qr "dist/${asset}" "press-theme-${slug}"
+          size="$(wc -c < "dist/${asset}" | tr -d ' ')"
+          digest="$(sha256sum "dist/${asset}" | awk '{print $1}')"
+          {
+            echo "version=${version}"
+            echo "asset=${asset}"
+            echo "path=dist/${asset}"
+            echo "size=${size}"
+            echo "digest=${digest}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Publish fetchable artifact
+        if: steps.plan.outputs.should_release == 'true'
+        id: artifact
+        env:
+          THEME_TAG: ${{ steps.plan.outputs.next_tag }}
+          PACKAGE_ASSET: ${{ steps.package.outputs.asset }}
+        run: |
+          set -euo pipefail
+          tag="${THEME_TAG}"
+          asset="${PACKAGE_ASSET}"
+          artifact_branch="release-artifacts"
+          artifact_path="${tag}/${asset}"
+          artifact_url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${artifact_branch}/${artifact_path}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "${artifact_branch}" || true
+          rm -rf artifacts-worktree
+          if git show-ref --verify --quiet "refs/remotes/origin/${artifact_branch}"; then
+            git worktree add artifacts-worktree "origin/${artifact_branch}"
+          else
+            git worktree add --detach artifacts-worktree
+            git -C artifacts-worktree checkout --orphan "${artifact_branch}"
+            git -C artifacts-worktree rm -rf . >/dev/null 2>&1 || true
+          fi
+
+          mkdir -p "artifacts-worktree/${tag}"
+          cp "dist/${asset}" "artifacts-worktree/${artifact_path}"
+          git -C artifacts-worktree add "${artifact_path}"
+          if git -C artifacts-worktree diff --cached --quiet; then
+            echo "Artifact ${artifact_path} is already published."
+          else
+            git -C artifacts-worktree commit -m "Publish ${asset}"
+            git -C artifacts-worktree push origin "HEAD:${artifact_branch}"
+          fi
+          git worktree remove artifacts-worktree --force
+          echo "url=${artifact_url}" >> "${GITHUB_OUTPUT}"
+
+      - name: Update theme-release.json
+        if: steps.plan.outputs.should_release == 'true'
+        env:
+          THEME_TAG: ${{ steps.plan.outputs.next_tag }}
+          THEME_SLUG: ${{ steps.config.outputs.slug }}
+          THEME_LABEL: ${{ steps.config.outputs.label }}
+          PACKAGE_VERSION: ${{ steps.package.outputs.version }}
+          PACKAGE_ASSET: ${{ steps.package.outputs.asset }}
+          PACKAGE_SIZE: ${{ steps.package.outputs.size }}
+          PACKAGE_DIGEST: ${{ steps.package.outputs.digest }}
+          ARTIFACT_URL: ${{ steps.artifact.outputs.url }}
+        run: |
+          set -euo pipefail
+          repo="${GITHUB_REPOSITORY}"
+          tag="${THEME_TAG}"
+          slug="${THEME_SLUG}"
+          label="${THEME_LABEL}"
+          version="${PACKAGE_VERSION}"
+          asset="${PACKAGE_ASSET}"
+          asset_url="${ARTIFACT_URL}"
+          size="${PACKAGE_SIZE}"
+          digest="${PACKAGE_DIGEST}"
+          published_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          export repo tag slug label version asset asset_url size digest published_at
+          node <<'NODE'
+          const fs = require('fs');
+          const repo = process.env.repo;
+          const tag = process.env.tag;
+          const slug = process.env.slug;
+          const label = process.env.label;
+          const version = process.env.version;
+          const asset = process.env.asset;
+          const assetUrl = process.env.asset_url;
+          const size = Number(process.env.size || 0);
+          const digest = process.env.digest;
+          const publishedAt = process.env.published_at;
+          const files = fs.readFileSync('dist/files.txt', 'utf8').split(/\r?\n/).filter(Boolean);
+          const manifest = {
+            schemaVersion: 1,
+            type: 'press-theme',
+            value: slug,
+            label,
+            version,
+            contractVersion: 1,
+            release: {
+              tag,
+              htmlUrl: `https://github.com/${repo}/releases/tag/${tag}`,
+              publishedAt,
+              notes: ''
+            },
+            asset: {
+              name: asset,
+              url: assetUrl,
+              size,
+              digest: `sha256:${digest}`
+            },
+            files
+          };
+          fs.writeFileSync('theme-release.json', `${JSON.stringify(manifest, null, 2)}\n`);
+          NODE
+
+      - name: Commit release metadata
+        if: steps.plan.outputs.should_release == 'true'
+        id: commit
+        env:
+          THEME_TAG: ${{ steps.plan.outputs.next_tag }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add theme/theme.json theme-release.json
+          if git diff --cached --quiet; then
+            echo "No release metadata changes to commit."
+          else
+            git commit -m "Update theme release manifest ${THEME_TAG}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+
+      - name: Publish GitHub Release
+        if: steps.plan.outputs.should_release == 'true'
+        env:
+          THEME_TAG: ${{ steps.plan.outputs.next_tag }}
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+          RELEASE_TARGET: ${{ steps.commit.outputs.sha }}
+        run: |
+          set -euo pipefail
+          tag="${THEME_TAG}"
+          asset="${PACKAGE_PATH}"
+          target="${RELEASE_TARGET}"
+          gh release create "${tag}" "${asset}" \
+            --target "${target}" \
+            --title "${tag}" \
+            --notes "Theme release ${tag}"

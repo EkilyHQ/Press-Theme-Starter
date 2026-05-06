@@ -1,0 +1,6 @@
+.DS_Store
+.press/
+dist/
+artifacts-worktree/
+press-theme-*/
+node_modules/

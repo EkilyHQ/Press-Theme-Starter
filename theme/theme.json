@@ -1,0 +1,74 @@
+{
+  "$schema": "../../schema/theme.json",
+  "name": "Starter",
+  "version": "0.1.0",
+  "contractVersion": 1,
+  "styles": [
+    "theme.css"
+  ],
+  "modules": [
+    "modules/starter.js"
+  ],
+  "views": {
+    "post": {
+      "module": "modules/starter.js",
+      "handler": "post"
+    },
+    "posts": {
+      "module": "modules/starter.js",
+      "handler": "posts"
+    },
+    "search": {
+      "module": "modules/starter.js",
+      "handler": "search"
+    },
+    "tab": {
+      "module": "modules/starter.js",
+      "handler": "tab"
+    },
+    "error": {
+      "module": "modules/starter.js",
+      "handler": "error"
+    },
+    "loading": {
+      "module": "modules/starter.js",
+      "handler": "loading"
+    }
+  },
+  "regions": {
+    "main": {
+      "required": true
+    },
+    "toc": {},
+    "search": {},
+    "nav": {},
+    "tags": {},
+    "footer": {
+      "required": true
+    },
+    "container": {},
+    "content": {}
+  },
+  "components": [
+    "press-search",
+    "press-toc",
+    "press-post-card"
+  ],
+  "scrollContainer": false,
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "content": {
+    "shapes": [
+      "rawMarkdown",
+      "html",
+      "blocks",
+      "tocTree",
+      "headings",
+      "metadata",
+      "assets",
+      "links"
+    ]
+  }
+}
