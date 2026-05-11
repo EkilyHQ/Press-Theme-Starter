@@ -250,6 +250,13 @@ jobs:
           const size = Number(process.env.size || 0);
           const digest = process.env.digest;
           const publishedAt = process.env.published_at;
+          const themeManifest = JSON.parse(fs.readFileSync('theme/theme.json', 'utf8'));
+          const engines = themeManifest.engines && typeof themeManifest.engines === 'object'
+            ? themeManifest.engines
+            : {};
+          if (!engines.press || typeof engines.press !== 'string') {
+            throw new Error('theme/theme.json must declare engines.press');
+          }
           const files = fs.readFileSync('dist/files.txt', 'utf8').split(/\r?\n/).filter(Boolean);
           const manifest = {
             schemaVersion: 1,
@@ -257,7 +264,8 @@ jobs:
             value: slug,
             label,
             version,
-            contractVersion: 1,
+            contractVersion: Number(themeManifest.contractVersion || 1),
+            engines,
             release: {
               tag,
               htmlUrl: `https://github.com/${repo}/releases/tag/${tag}`,

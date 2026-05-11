@@ -7,6 +7,8 @@ const pressRepository = process.env.PRESS_REPOSITORY || 'EkilyHQ/Press';
 const assetName = process.env.PRESS_ASSET_NAME || '';
 const assetSize = Number(process.env.PRESS_ASSET_SIZE || 0);
 const assetSha256 = String(process.env.PRESS_ASSET_SHA256 || '').replace(/^sha256:/i, '');
+const systemVersion = String(process.env.PRESS_SYSTEM_VERSION || '').replace(/^v/i, '');
+const upgradeFromJson = String(process.env.PRESS_UPGRADE_FROM_JSON || '').trim();
 
 if (!fs.existsSync(releasePath)) {
   throw new Error(`Press release JSON not found: ${releasePath}`);
@@ -27,12 +29,15 @@ if (!asset) {
 const body = String(release.body || '');
 const digest = String(asset.digest || assetSha256 || '').replace(/^sha256:/i, '')
   || ((body.match(/SHA-256:\s*`?([a-fA-F0-9]{64})`?/) || [])[1] || '');
+const tag = release.tag_name || '';
+const version = systemVersion || String(tag).replace(/^v/i, '');
 
 const marker = {
   schemaVersion: 1,
   pressRepository,
-  tag: release.tag_name || '',
-  name: release.name || release.tag_name || '',
+  version,
+  tag,
+  name: release.name || tag || '',
   publishedAt: release.published_at || release.created_at || '',
   releaseUrl: release.html_url || '',
   asset: {
@@ -42,6 +47,10 @@ const marker = {
     digest: digest ? `sha256:${digest}` : ''
   }
 };
+
+if (upgradeFromJson && upgradeFromJson !== 'null') {
+  marker.upgradeFrom = JSON.parse(upgradeFromJson);
+}
 
 fs.writeFileSync(outputPath, `${JSON.stringify(marker, null, 2)}\n`, 'utf8');
 console.log(`Updated ${outputPath} for ${marker.tag}.`);
