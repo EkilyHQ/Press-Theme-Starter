@@ -3,22 +3,22 @@
   "type": "press-theme",
   "value": "starter",
   "label": "Starter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "contractVersion": 1,
   "engines": {
     "press": ">=3.4.0 <4.0.0"
   },
   "release": {
-    "tag": "v0.1.1",
-    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Starter/releases/tag/v0.1.1",
-    "publishedAt": "2026-05-11T17:06:27Z",
+    "tag": "v0.1.2",
+    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Starter/releases/tag/v0.1.2",
+    "publishedAt": "2026-05-11T21:59:54Z",
     "notes": ""
   },
   "asset": {
-    "name": "press-theme-starter-v0.1.1.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press-Theme-Starter/release-artifacts/v0.1.1/press-theme-starter-v0.1.1.zip",
-    "size": 3432,
-    "digest": "sha256:b704048cf6e276be7c8972abc32f16fb72c049cb21a0c738ae725d5876316ec8"
+    "name": "press-theme-starter-v0.1.2.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press-Theme-Starter/release-artifacts/v0.1.2/press-theme-starter-v0.1.2.zip",
+    "size": 3504,
+    "digest": "sha256:f4e9b5ebc9acae18e46a04bb81f0d76874468a0331d897a6323a4238aea2aaad"
   },
   "files": [
     "modules/starter.js",
