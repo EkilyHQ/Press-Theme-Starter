@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "pressRepository": "EkilyHQ/Press",
-  "tag": "v3.3.64",
-  "name": "v3.3.64",
-  "publishedAt": "2026-05-10T10:31:07Z",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.3.64",
+  "tag": "v3.4.0",
+  "name": "v3.4.0",
+  "publishedAt": "2026-05-11T17:01:09Z",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.0",
   "asset": {
-    "name": "press-system-v3.3.64.zip",
-    "url": "https://github.com/EkilyHQ/Press/releases/download/v3.3.64/press-system-v3.3.64.zip",
-    "size": 1575373,
-    "digest": "sha256:71f733e37624c7591326eb8dee7d4b939ddf932b6d784ad015a1812b2051fa65"
+    "name": "press-system-v3.4.0.zip",
+    "url": "https://github.com/EkilyHQ/Press/releases/download/v3.4.0/press-system-v3.4.0.zip",
+    "size": 1578423,
+    "digest": "sha256:5637339e732c22c0953974b67757adac4d5e492f0f1b5d727d4b2b79fc4d0a29"
   }
 }
