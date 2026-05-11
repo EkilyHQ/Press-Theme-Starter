@@ -29,6 +29,8 @@ jobs:
       DISPATCH_ASSET_NAME: ${{ github.event.client_payload.asset_name }}
       DISPATCH_ASSET_SIZE: ${{ github.event.client_payload.asset_size }}
       DISPATCH_ASSET_SHA256: ${{ github.event.client_payload.asset_sha256 }}
+      DISPATCH_VERSION: ${{ github.event.client_payload.version }}
+      DISPATCH_UPGRADE_FROM_JSON: ${{ toJSON(github.event.client_payload.upgrade_from) }}
       PRESS_RELEASE_TOKEN: ${{ secrets.PRESS_RELEASE_TOKEN || github.token }}
     steps:
       - name: Checkout theme starter
@@ -56,6 +58,8 @@ jobs:
           PRESS_ASSET_NAME: ${{ github.event.client_payload.asset_name }}
           PRESS_ASSET_SIZE: ${{ github.event.client_payload.asset_size }}
           PRESS_ASSET_SHA256: ${{ github.event.client_payload.asset_sha256 }}
+          PRESS_SYSTEM_VERSION: ${{ github.event.client_payload.version }}
+          PRESS_UPGRADE_FROM_JSON: ${{ toJSON(github.event.client_payload.upgrade_from) }}
         run: |
           set -euo pipefail
           node scripts/sync-press-system-release.js

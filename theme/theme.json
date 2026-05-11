@@ -3,6 +3,9 @@
   "name": "Starter",
   "version": "0.1.0",
   "contractVersion": 1,
+  "engines": {
+    "press": ">=3.4.0 <4.0.0"
+  },
   "styles": [
     "theme.css"
   ],

@@ -11,7 +11,7 @@ The starter contains a minimal Press theme that passes the current theme contrac
 3. Edit `theme-repo.json`:
    - `slug` is the installed folder name under `assets/themes/<slug>`.
    - `label` is the name shown in Press Theme Manager.
-4. Edit `theme/theme.json` and change `name`.
+4. Edit `theme/theme.json` and change `name`. Keep `engines.press` aligned with the Press versions your theme supports.
 5. Build your theme in `theme/`.
 
 Do not edit `.github/workflows/theme-release.yml` for ordinary theme metadata. The workflow reads `theme-repo.json`.
@@ -19,7 +19,7 @@ Do not edit `.github/workflows/theme-release.yml` for ordinary theme metadata. T
 ## Repository Layout
 
 - `theme-repo.json` - release metadata for this theme repository.
-- `theme/theme.json` - Press runtime manifest for the theme.
+- `theme/theme.json` - Press runtime manifest for the theme, including `engines.press` compatibility.
 - `theme/theme.css` - theme stylesheet.
 - `theme/modules/starter.js` - minimal contract-compatible theme module.
 - `theme-release.json` - latest release manifest consumed by Press Theme Manager.
@@ -33,7 +33,7 @@ Each release publishes:
 
 - `press-theme-<slug>-vX.Y.Z.zip` on the GitHub Release.
 - A browser-fetchable ZIP copy on the `release-artifacts` branch.
-- A root `theme-release.json` manifest with the ZIP URL, size, SHA-256 digest, and file inventory.
+- A root `theme-release.json` manifest with the ZIP URL, size, SHA-256 digest, file inventory, and `engines.press` range.
 
 Press only consumes the released ZIP and installs it into a site under `assets/themes/<slug>/`.
 
