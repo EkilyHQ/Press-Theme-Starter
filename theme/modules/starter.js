@@ -16,6 +16,15 @@ function setHtml(element, html) {
   return true;
 }
 
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function getMain(params = {}) {
   return (params.containers && params.containers.mainElement)
     || params.container
@@ -27,7 +36,7 @@ function renderPost(params = {}) {
   const main = getMain(params);
   if (!main) return undefined;
   const title = (params.postMetadata && params.postMetadata.title) || params.fallbackTitle || '';
-  const heading = title ? `<h1>${title}</h1>` : '';
+  const heading = title ? `<h1>${escapeHtml(title)}</h1>` : '';
   setHtml(main, `${heading}${params.markdownHtml || ''}`);
   return { decorated: true, title };
 }
@@ -40,7 +49,7 @@ function renderList(params = {}) {
     const href = params.withLangParam
       ? params.withLangParam(`?id=${encodeURIComponent((meta && meta.location) || '')}`)
       : `?id=${encodeURIComponent((meta && meta.location) || '')}`;
-    return `<article class="starter-card"><h2><a href="${href}">${title}</a></h2></article>`;
+    return `<article class="starter-card"><h2><a href="${escapeHtml(href)}">${escapeHtml(title)}</a></h2></article>`;
   }).join('');
   setHtml(main, cards || '<p>No posts yet.</p>');
   return { decorated: true };
@@ -58,7 +67,7 @@ function renderTab(params = {}) {
   const main = getMain(params);
   if (!main) return undefined;
   const title = params.tab && params.tab.title ? params.tab.title : '';
-  const heading = title ? `<h1>${title}</h1>` : '';
+  const heading = title ? `<h1>${escapeHtml(title)}</h1>` : '';
   setHtml(main, `${heading}${params.markdownHtml || ''}`);
   return { decorated: true, title };
 }

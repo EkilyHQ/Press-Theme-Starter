@@ -124,6 +124,10 @@ jobs:
           fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
           NODE
 
+      - name: Test starter rendering security
+        if: steps.plan.outputs.should_release == 'true'
+        run: node scripts/test-starter-render-security.mjs
+
       - name: Checkout Press checks
         if: steps.plan.outputs.should_release == 'true'
         uses: actions/checkout@v4
