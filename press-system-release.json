@@ -11,12 +11,5 @@
     "url": "https://github.com/EkilyHQ/Press/releases/download/v3.4.8/press-system-v3.4.8.zip",
     "size": 1585426,
     "digest": "sha256:8d5bd643c9a939753066f44ce5c890b500bb61a435f49d3c0d3641aadd4ab406"
-  },
-  "upgradeFrom": {
-    "allowUnknownSource": false,
-    "message": "Update to v3.4.7 first.",
-    "ranges": [
-      ">=3.4.7 <3.4.8"
-    ]
   }
 }
