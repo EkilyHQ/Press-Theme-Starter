@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "pressRepository": "EkilyHQ/Press",
-  "version": "3.4.43",
-  "tag": "v3.4.43",
-  "name": "v3.4.43",
-  "publishedAt": "2026-05-22T17:26:10Z",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.43",
+  "version": "3.4.44",
+  "tag": "v3.4.44",
+  "name": "v3.4.44",
+  "publishedAt": "2026-05-22T17:50:51Z",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.44",
   "asset": {
-    "name": "press-system-v3.4.43.zip",
-    "url": "https://github.com/EkilyHQ/Press/releases/download/v3.4.43/press-system-v3.4.43.zip",
-    "size": 1640637,
-    "digest": "sha256:d1115423586fc693246fe3cfb668a57233436141b97ca560ceeceda8769f47d2"
+    "name": "press-system-v3.4.44.zip",
+    "url": "https://github.com/EkilyHQ/Press/releases/download/v3.4.44/press-system-v3.4.44.zip",
+    "size": 1641982,
+    "digest": "sha256:08496cafea5bb5e34afbb673fd77725a27f28131e9c51530a80cd151a1d777e5"
   },
   "upgradeFrom": {
     "allowUnknownSource": false,
-    "message": "Update to v3.4.42 first.",
+    "message": "Update to v3.4.43 first.",
     "ranges": [
-      ">=3.4.42 <3.4.43"
+      ">=3.4.43 <3.4.44"
     ]
   }
 }
