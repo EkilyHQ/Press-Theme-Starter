@@ -11,12 +11,5 @@
     "url": "https://github.com/EkilyHQ/Press/releases/download/v3.4.50/press-system-v3.4.50.zip",
     "size": 1650526,
     "digest": "sha256:e2238c545c8489eb0759bedff8a2b165c0e17e90ccfa231c744151fa9b3c517c"
-  },
-  "upgradeFrom": {
-    "allowUnknownSource": false,
-    "message": "Update to v3.4.49 first.",
-    "ranges": [
-      ">=3.4.49 <3.4.50"
-    ]
   }
 }
