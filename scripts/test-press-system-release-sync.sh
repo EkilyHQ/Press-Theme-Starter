@@ -51,6 +51,16 @@ if grep -F 'pull-requests: write' "${workflow}" >/dev/null; then
   exit 1
 fi
 
+if ! grep -F 'actions/checkout@v6' "${workflow}" >/dev/null || ! grep -F 'actions/checkout@v6' "${theme_workflow}" >/dev/null; then
+  echo "Theme Starter workflows must use Node 24-compatible checkout actions" >&2
+  exit 1
+fi
+
+if grep -E 'actions/(checkout@v4|upload-artifact@v4)' "${workflow}" "${theme_workflow}" >/dev/null; then
+  echo "Theme Starter workflows must not pin known Node 20-backed GitHub actions" >&2
+  exit 1
+fi
+
 node --check "${script}"
 
 node <<'NODE'
