@@ -31,6 +31,7 @@ jobs:
       DISPATCH_ASSET_SHA256: ${{ github.event.client_payload.asset_sha256 }}
       DISPATCH_VERSION: ${{ github.event.client_payload.version }}
       DISPATCH_UPGRADE_FROM_JSON: ${{ toJSON(github.event.client_payload.upgrade_from) }}
+      DISPATCH_RELEASE_INTENT_SOURCE: ${{ github.event.client_payload.release_intent.source }}
       PRESS_RELEASE_TOKEN: ${{ secrets.PRESS_RELEASE_TOKEN || github.token }}
     steps:
       - name: Checkout theme starter
@@ -40,6 +41,7 @@ jobs:
           fetch-depth: 0
 
       - name: Resolve Press release
+        id: release
         env:
           GH_TOKEN: ${{ secrets.PRESS_RELEASE_TOKEN || github.token }}
         run: |
@@ -52,14 +54,70 @@ jobs:
             gh api "repos/${PRESS_REPOSITORY}/releases/latest" > dist/press-release.json
           fi
 
+          release_tag="$(node -p "require('./dist/press-release.json').tag_name || ''")"
+          payload_intent_source="${DISPATCH_RELEASE_INTENT_SOURCE:-}"
+          canonical_intent_source=""
+          if [[ -n "${release_tag}" ]]; then
+            canonical_intent_source="https://raw.githubusercontent.com/${PRESS_REPOSITORY}/release-artifacts/${release_tag}/release-intent.json"
+          fi
+          if [[ -n "${payload_intent_source}" && "${payload_intent_source}" != "${canonical_intent_source}" ]]; then
+            echo "dispatch release_intent.source must match ${canonical_intent_source}" >&2
+            exit 1
+          fi
+
+          if [[ -n "${canonical_intent_source}" ]]; then
+            if curl --fail-with-body --location --silent --show-error \
+              --header "Authorization: Bearer ${PRESS_RELEASE_TOKEN}" \
+              --output dist/release-intent.json \
+              "${canonical_intent_source}"; then
+              echo "Resolved Press release intent ${canonical_intent_source}."
+            else
+              rm -f dist/release-intent.json
+              if [[ -n "${payload_intent_source}" ]]; then
+                echo "dispatch declared a release intent, but the canonical manifest could not be fetched." >&2
+                exit 1
+              fi
+              canonical_system_release_source="https://raw.githubusercontent.com/${PRESS_REPOSITORY}/release-artifacts/${release_tag}/system-release.json"
+              if curl --fail-with-body --location --silent --show-error \
+                --header "Authorization: Bearer ${PRESS_RELEASE_TOKEN}" \
+                --output dist/system-release.json \
+                "${canonical_system_release_source}"; then
+                if node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('dist/system-release.json','utf8')); process.exit(m.intent && m.intent.url ? 0 : 1);"; then
+                  echo "system-release.json declares release intent, but the canonical manifest could not be fetched." >&2
+                  exit 1
+                fi
+              fi
+              echo "No canonical release intent manifest available for ${release_tag}; using legacy release metadata."
+            fi
+          fi
+
+          PRESS_TARGET_REPOSITORY="${GITHUB_REPOSITORY}" \
+          PRESS_RELEASE_TARGET_CATEGORY="downstream" \
+          PRESS_RELEASE_TARGET_REF="main" \
+          PRESS_RELEASE_TARGET_PATH="press-system-release.json" \
+          PRESS_RELEASE_TARGET_TYPE="press-release-marker" \
+          PRESS_RELEASE_TARGET_RECONCILER="theme-starter-marker-sync" \
+          node scripts/resolve-press-system-release.js \
+            --release dist/press-release.json \
+            --release-intent dist/release-intent.json \
+            --out dist/press-release-env.txt
+
+          while IFS='=' read -r key value; do
+            [[ -n "${key}" ]] || continue
+            echo "${key}=${value}" >> "${GITHUB_OUTPUT}"
+          done < dist/press-release-env.txt
+
       - name: Update Press release marker
         env:
           PRESS_RELEASE_JSON: dist/press-release.json
-          PRESS_ASSET_NAME: ${{ github.event.client_payload.asset_name }}
-          PRESS_ASSET_SIZE: ${{ github.event.client_payload.asset_size }}
-          PRESS_ASSET_SHA256: ${{ github.event.client_payload.asset_sha256 }}
-          PRESS_SYSTEM_VERSION: ${{ github.event.client_payload.version }}
-          PRESS_UPGRADE_FROM_JSON: ${{ toJSON(github.event.client_payload.upgrade_from) }}
+          PRESS_ASSET_NAME: ${{ steps.release.outputs.asset_name }}
+          PRESS_ASSET_URL: ${{ steps.release.outputs.asset_url }}
+          PRESS_ASSET_SIZE: ${{ steps.release.outputs.asset_size }}
+          PRESS_ASSET_SHA256: ${{ steps.release.outputs.asset_sha256 }}
+          PRESS_SYSTEM_VERSION: ${{ steps.release.outputs.version }}
+          PRESS_SYSTEM_TAG: ${{ steps.release.outputs.tag }}
+          PRESS_UPGRADE_FROM_JSON: ${{ steps.release.outputs.upgrade_from_json }}
+          PRESS_RELEASE_INTENT_SOURCE: ${{ steps.release.outputs.release_intent_source }}
         run: |
           set -euo pipefail
           node scripts/sync-press-system-release.js
