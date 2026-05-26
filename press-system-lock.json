@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "type": "press-system-release-lock",
+  "repository": "EkilyHQ/Press-Theme-Starter",
+  "target": {
+    "category": "downstream",
+    "ref": "main",
+    "path": "press-system-release.json",
+    "type": "press-release-marker",
+    "reconciler": "theme-starter-marker-sync"
+  },
+  "sourceKind": "release-intent",
+  "version": "3.4.62",
+  "tag": "v3.4.62",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.62",
+  "asset": {
+    "name": "press-system-v3.4.62.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.62/press-system-v3.4.62.zip",
+    "size": 1766556,
+    "digest": "sha256:73cdf16ee6ea8a79958491824f2ff7966befbe504eec6726d250d9eee494a324"
+  },
+  "releaseIntent": {
+    "type": "press-release-intent",
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.62/release-intent.json"
+  },
+  "upgradeFrom": {
+    "ranges": [
+      ">=3.4.61 <3.4.62"
+    ],
+    "allowUnknownSource": false,
+    "message": "Update to v3.4.61 first."
+  }
+}
