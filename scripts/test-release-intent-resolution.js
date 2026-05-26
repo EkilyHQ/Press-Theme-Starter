@@ -10,6 +10,32 @@ const repoName = path.basename(repoRoot);
 const script = path.join(repoRoot, 'scripts', 'resolve-press-system-release.js');
 const digestA = 'a'.repeat(64);
 const digestB = 'b'.repeat(64);
+const RESOLVER_ENV_KEYS = [
+  'PRESS_REPOSITORY',
+  'PRESS_TARGET_REPOSITORY',
+  'GITHUB_REPOSITORY',
+  'PRESS_RELEASE_TARGET_CATEGORY',
+  'PRESS_RELEASE_TARGET_REF',
+  'PRESS_RELEASE_TARGET_PATH',
+  'PRESS_RELEASE_TARGET_TYPE',
+  'PRESS_RELEASE_TARGET_RECONCILER',
+  'DISPATCH_RELEASE_INTENT_SOURCE',
+  'PRESS_RELEASE_INTENT_SOURCE',
+  'DISPATCH_ASSET_NAME',
+  'PRESS_ASSET_NAME',
+  'PRESS_ASSET_URL',
+  'DISPATCH_ASSET_SIZE',
+  'PRESS_ASSET_SIZE',
+  'DISPATCH_ASSET_SHA256',
+  'PRESS_ASSET_SHA256',
+  'DISPATCH_TAG',
+  'PRESS_SYSTEM_TAG',
+  'PRESS_SYSTEM_VERSION',
+  'DISPATCH_UPGRADE_FROM_JSON',
+  'PRESS_UPGRADE_FROM_JSON',
+  'PRESS_RELEASE_JSON',
+  'PRESS_RELEASE_INTENT_JSON'
+];
 
 function repoContract(name) {
   if (name === 'YAP') {
@@ -60,10 +86,18 @@ function parseEnv(text) {
   }));
 }
 
+function resolverEnv(overrides) {
+  const clean = { ...process.env };
+  for (const key of RESOLVER_ENV_KEYS) {
+    delete clean[key];
+  }
+  return { ...clean, ...overrides };
+}
+
 function runResolver(args, env) {
   return parseEnv(childProcess.execFileSync(process.execPath, [script, ...args], {
     cwd: repoRoot,
-    env: { ...process.env, ...env },
+    env: resolverEnv(env),
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe']
   }));
