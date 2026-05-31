@@ -10,24 +10,24 @@
     "reconciler": "theme-starter-marker-sync"
   },
   "sourceKind": "release-intent",
-  "version": "3.4.113",
-  "tag": "v3.4.113",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.113",
+  "version": "3.4.114",
+  "tag": "v3.4.114",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.114",
   "asset": {
-    "name": "press-system-v3.4.113.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.113/press-system-v3.4.113.zip",
-    "size": 1833134,
-    "digest": "sha256:e3ef84a230b8d31c897d836f15fc8871d8e89838d192e8b0a51227bc82a9e2e8"
+    "name": "press-system-v3.4.114.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.114/press-system-v3.4.114.zip",
+    "size": 1833896,
+    "digest": "sha256:b99b8f08ee346697a2ac2080670abf4c8d29ebf97d0eb0a1768084da191d96c3"
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.113/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.114/release-intent.json"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.112 <3.4.113"
+      ">=3.4.113 <3.4.114"
     ],
     "allowUnknownSource": false,
-    "message": "Update to v3.4.112 first."
+    "message": "Update to v3.4.113 first."
   }
 }
