@@ -73,23 +73,8 @@ jobs:
               echo "Resolved Press release intent ${canonical_intent_source}."
             else
               rm -f dist/release-intent.json
-              if [[ -n "${payload_intent_source}" ]]; then
-                echo "dispatch declared a release intent, but the canonical manifest could not be fetched." >&2
-                exit 1
-              fi
-              canonical_system_release_source="https://raw.githubusercontent.com/${PRESS_REPOSITORY}/release-artifacts/${release_tag}/system-release.json"
-              if ! curl --fail-with-body --location --silent --show-error \
-                --header "Authorization: Bearer ${PRESS_RELEASE_TOKEN}" \
-                --output dist/system-release.json \
-                "${canonical_system_release_source}"; then
-                echo "could not verify whether ${release_tag} declares release intent; refusing legacy fallback." >&2
-                exit 1
-              fi
-              if node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('dist/system-release.json','utf8')); process.exit(m.intent && m.intent.url ? 0 : 1);"; then
-                echo "system-release.json declares release intent, but the canonical manifest could not be fetched." >&2
-                exit 1
-              fi
-              echo "No canonical release intent manifest available for ${release_tag}; using legacy release metadata."
+              echo "canonical release intent ${canonical_intent_source} could not be fetched; legacy GitHub release metadata fallback has been sunset." >&2
+              exit 1
             fi
           fi
 

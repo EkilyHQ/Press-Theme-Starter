@@ -56,13 +56,8 @@ if ! grep -F 'payload_intent_source' "${workflow}" >/dev/null || ! grep -F 'disp
   exit 1
 fi
 
-if ! grep -F 'system-release.json declares release intent' "${workflow}" >/dev/null; then
-  echo "Press system release sync workflow must fail when system-release.json declares an intent that cannot be fetched" >&2
-  exit 1
-fi
-
-if ! grep -F 'refusing legacy fallback' "${workflow}" >/dev/null; then
-  echo "Press system release sync workflow must fail when it cannot prove a release has no intent" >&2
+if ! grep -F 'legacy GitHub release metadata fallback has been sunset' "${workflow}" >/dev/null; then
+  echo "Press system release sync workflow must fail closed after the legacy release metadata fallback sunset" >&2
   exit 1
 fi
 

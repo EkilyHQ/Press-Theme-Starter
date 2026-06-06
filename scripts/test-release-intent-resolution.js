@@ -205,14 +205,12 @@ try {
     });
   }, /canonical immutable/);
 
-  const resolvedLegacy = runResolver(['--release', releasePath], {
-    ...baseEnv,
-    DISPATCH_ASSET_NAME: 'press-system-v9.9.9.zip'
-  });
-  assert.equal(resolvedLegacy.source_kind, 'legacy-release');
-  assert.equal(resolvedLegacy.asset_url, 'https://github.com/EkilyHQ/Press/releases/download/v9.9.9/press-system-v9.9.9.zip');
-  assert.equal(resolvedLegacy.asset_sha256, digestB);
-  assert.equal(resolvedLegacy.release_intent_source, '');
+  assert.throws(() => {
+    runResolver(['--release', releasePath], {
+      ...baseEnv,
+      DISPATCH_ASSET_NAME: 'press-system-v9.9.9.zip'
+    });
+  }, /release intent is required/);
 
   const badIntent = createIntent(contract);
   badIntent.targets[0].repository = 'EkilyHQ/Other';
