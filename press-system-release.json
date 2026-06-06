@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
   "pressRepository": "EkilyHQ/Press",
-  "version": "3.4.121",
-  "tag": "v3.4.121",
-  "name": "v3.4.121",
-  "publishedAt": "2026-06-06T14:56:25Z",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.121",
+  "version": "3.4.122",
+  "tag": "v3.4.122",
+  "name": "v3.4.122",
+  "publishedAt": "2026-06-06T16:38:30Z",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.122",
   "asset": {
-    "name": "press-system-v3.4.121.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.121/press-system-v3.4.121.zip",
-    "size": 1857314,
-    "digest": "sha256:b5e7caab5bff0f344e1d33169e0fd8f5e439174b623744d0b4af3b5019e18c6c"
+    "name": "press-system-v3.4.122.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.122/press-system-v3.4.122.zip",
+    "size": 1860245,
+    "digest": "sha256:3c6e1ebffef82ccb05348f163651aa76706ab5c58b53b33432ac62941427a1e9"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.120 <3.4.121"
+      ">=3.4.121 <3.4.122"
     ],
     "allowUnknownSource": false,
-    "message": "Update to v3.4.120 first."
+    "message": "Update to v3.4.121 first."
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.121/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.122/release-intent.json"
   }
 }
