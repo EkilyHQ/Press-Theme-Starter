@@ -52,16 +52,6 @@ function readOptionalJsonFile(file) {
   return readJsonFile(file);
 }
 
-function parseOptionalJson(value, label) {
-  const text = String(value || '').trim();
-  if (!text || text === 'null' || text === 'undefined') return null;
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    throw new Error(`${label} must be valid JSON: ${error.message}`);
-  }
-}
-
 function requireString(value, label) {
   const text = String(value || '').trim();
   if (!text) throw new Error(`${label} is required`);
@@ -180,61 +170,20 @@ function resolveFromIntent({ release, intent }) {
   };
 }
 
-function findLegacyAsset(release) {
-  const payloadName = envValue('DISPATCH_ASSET_NAME', envValue('PRESS_ASSET_NAME'));
-  const assets = Array.isArray(release.assets) ? release.assets : [];
-  const candidates = assets.filter((asset) => {
-    const name = String(asset && asset.name || '');
-    if (payloadName) return name === payloadName;
-    return /^press-system-v\d+\.\d+\.\d+\.zip$/u.test(name);
-  });
-  if (candidates.length !== 1) {
-    throw new Error(`expected exactly one Press system package asset, found ${candidates.length}`);
-  }
-  return candidates[0];
-}
-
-function resolveFromLegacyRelease(release) {
-  const asset = findLegacyAsset(release);
-  const body = String(release.body || '');
-  const digest = normalizeDigest(asset.digest)
-    || normalizeDigest(envValue('DISPATCH_ASSET_SHA256', envValue('PRESS_ASSET_SHA256')))
-    || normalizeDigest((body.match(/SHA-256:\s*`?([a-fA-F0-9]{64})`?/) || [])[1] || '');
-  const size = Number(asset.size || envValue('DISPATCH_ASSET_SIZE', envValue('PRESS_ASSET_SIZE')) || 0);
-  const tag = normalizeTag(release.tag_name || envValue('DISPATCH_TAG', envValue('PRESS_SYSTEM_TAG')));
-  const version = normalizeSemver(envValue('PRESS_SYSTEM_VERSION')) || normalizeSemver(tag);
-  const upgradeFrom = parseOptionalJson(
-    envValue('DISPATCH_UPGRADE_FROM_JSON', envValue('PRESS_UPGRADE_FROM_JSON')),
-    'upgrade metadata'
-  );
-
-  return {
-    source_kind: 'legacy-release',
-    tag,
-    version,
-    asset_name: asset.name || envValue('PRESS_ASSET_NAME'),
-    asset_url: asset.browser_download_url || asset.url || envValue('PRESS_ASSET_URL'),
-    asset_size: Number.isFinite(size) ? size : 0,
-    asset_sha256: digest,
-    html_url: release.html_url || '',
-    release_intent_source: '',
-    upgrade_from_json: upgradeFrom ? JSON.stringify(upgradeFrom) : ''
-  };
-}
-
 function main() {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) {
-    process.stdout.write('usage: resolve-press-system-release.js --release path [--release-intent path] [--out path]\n');
+    process.stdout.write('usage: resolve-press-system-release.js --release path --release-intent path [--out path]\n');
     return;
   }
   const releasePath = options.releasePath || envValue('PRESS_RELEASE_JSON', 'dist/press-release.json');
   const release = readJsonFile(releasePath);
   const intentPath = options.intentPath || envValue('PRESS_RELEASE_INTENT_JSON');
   const intent = readOptionalJsonFile(intentPath);
-  const resolved = intent
-    ? resolveFromIntent({ release, intent })
-    : resolveFromLegacyRelease(release);
+  if (!intent) {
+    throw new Error('release intent is required; legacy GitHub release metadata fallback has been sunset');
+  }
+  const resolved = resolveFromIntent({ release, intent });
   writeOutputs(resolved, options.outPath);
 }
 
