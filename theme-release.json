@@ -3,22 +3,22 @@
   "type": "press-theme",
   "value": "starter",
   "label": "Starter",
-  "version": "0.1.2",
-  "contractVersion": 1,
+  "version": "0.1.3",
+  "contractVersion": 2,
   "engines": {
-    "press": ">=3.4.0 <4.0.0"
+    "press": ">=3.4.121 <4.0.0"
   },
   "release": {
-    "tag": "v0.1.2",
-    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Starter/releases/tag/v0.1.2",
-    "publishedAt": "2026-05-11T21:59:54Z",
+    "tag": "v0.1.3",
+    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Starter/releases/tag/v0.1.3",
+    "publishedAt": "2026-06-06T15:11:13Z",
     "notes": ""
   },
   "asset": {
-    "name": "press-theme-starter-v0.1.2.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press-Theme-Starter/release-artifacts/v0.1.2/press-theme-starter-v0.1.2.zip",
-    "size": 3504,
-    "digest": "sha256:f4e9b5ebc9acae18e46a04bb81f0d76874468a0331d897a6323a4238aea2aaad"
+    "name": "press-theme-starter-v0.1.3.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press-Theme-Starter/release-artifacts/v0.1.3/press-theme-starter-v0.1.3.zip",
+    "size": 3508,
+    "digest": "sha256:6894abaadb9e81d379712d2625b611053856469a3e49263619261862dff4fefd"
   },
   "files": [
     "modules/starter.js",
