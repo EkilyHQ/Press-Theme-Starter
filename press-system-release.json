@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
   "pressRepository": "EkilyHQ/Press",
-  "version": "3.4.125",
-  "tag": "v3.4.125",
-  "name": "v3.4.125",
-  "publishedAt": "2026-06-06T19:05:25Z",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.125",
+  "version": "3.4.126",
+  "tag": "v3.4.126",
+  "name": "v3.4.126",
+  "publishedAt": "2026-07-02T15:01:23Z",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.126",
   "asset": {
-    "name": "press-system-v3.4.125.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.125/press-system-v3.4.125.zip",
-    "size": 1864920,
-    "digest": "sha256:a2cd3e767b838b43cb8c0aab0dc81b2d47ea3474fc8ef49d92ffb01df9de101d"
+    "name": "press-system-v3.4.126.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.126/press-system-v3.4.126.zip",
+    "size": 1870382,
+    "digest": "sha256:43a7a15218964cae15dfb7e35cfeb445522cd884f9e3721f3a3f52377db48bc1"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.124 <3.4.125"
+      ">=3.4.125 <3.4.126"
     ],
     "allowUnknownSource": false,
-    "message": "Update to v3.4.124 first and publish the content model migration before installing v3.4.125."
+    "message": "Update to v3.4.125 before installing v3.4.126."
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.125/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.126/release-intent.json"
   }
 }
