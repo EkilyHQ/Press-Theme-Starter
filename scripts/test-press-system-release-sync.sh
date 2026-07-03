@@ -175,6 +175,9 @@ for (const needle of ['themeManifest.engines', 'engines,', 'theme/theme.json mus
     throw new Error(`theme release workflow must include ${needle}`);
   }
 }
+if (!workflow.includes('PRESS_CONTRACT_CHECK_REF: v3.4.130') || !workflow.includes('ref: ${{ env.PRESS_CONTRACT_CHECK_REF }}')) {
+  throw new Error('theme release workflow must validate v4 themes against the Press v3.4.130 contract checks');
+}
 const script = fs.readFileSync('scripts/sync-press-system-release.js', 'utf8');
 for (const needle of ['PRESS_SYSTEM_VERSION', 'PRESS_UPGRADE_FROM_JSON', 'marker.upgradeFrom', 'PRESS_RELEASE_INTENT_SOURCE', 'marker.releaseIntent']) {
   if (!script.includes(needle)) {
