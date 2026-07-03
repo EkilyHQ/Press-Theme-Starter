@@ -32,11 +32,16 @@ function getMain(params = {}) {
     || null;
 }
 
-function withRuntimeLangParam(params = {}, href = '') {
+function getRuntimeRouteHref(params = {}, name, ...args) {
   const router = params.ctx && params.ctx.router;
-  if (router && typeof router.withLangParam === 'function') return router.withLangParam(href);
-  if (typeof params.withLangParam === 'function') return params.withLangParam(href);
-  return href;
+  const helper = router && typeof router[name] === 'function' ? router[name] : null;
+  if (!helper) return null;
+  try {
+    const href = helper(...args);
+    return href ? String(href) : null;
+  } catch (_) {
+    return null;
+  }
 }
 
 function renderPost(params = {}) {
@@ -53,7 +58,8 @@ function renderList(params = {}) {
   if (!main) return undefined;
   const entries = Array.isArray(params.pageEntries) ? params.pageEntries : [];
   const cards = entries.map(([title, meta]) => {
-    const href = withRuntimeLangParam(params, `?id=${encodeURIComponent((meta && meta.location) || '')}`);
+    const href = getRuntimeRouteHref(params, 'getPostHref', (meta && meta.location) || '');
+    if (!href) return '';
     return `<article class="starter-card"><h2><a href="${escapeHtml(href)}">${escapeHtml(title)}</a></h2></article>`;
   }).join('');
   setHtml(main, cards || '<p>No posts yet.</p>');

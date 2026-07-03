@@ -157,11 +157,11 @@ node <<'NODE'
 const fs = require('fs');
 const manifest = JSON.parse(fs.readFileSync('theme/theme.json', 'utf8'));
 const example = JSON.parse(fs.readFileSync('theme-release.example.json', 'utf8'));
-if (manifest.engines?.press !== '>=3.4.127 <4.0.0') {
-  throw new Error('theme/theme.json must declare engines.press >=3.4.127 <4.0.0');
+if (manifest.engines?.press !== '>=3.4.130 <4.0.0') {
+  throw new Error('theme/theme.json must declare engines.press >=3.4.130 <4.0.0');
 }
-if (manifest.contractVersion !== 3) {
-  throw new Error('theme/theme.json must declare contractVersion 3');
+if (manifest.contractVersion !== 4) {
+  throw new Error('theme/theme.json must declare contractVersion 4');
 }
 if (example.contractVersion !== manifest.contractVersion) {
   throw new Error('theme-release.example.json must carry the same contractVersion');

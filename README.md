@@ -40,3 +40,5 @@ Press only consumes the released ZIP and installs it into a site under `assets/t
 ## Contract Checks
 
 The release workflow checks out `EkilyHQ/Press`, copies this repository's `theme/` folder into the Press theme directory, and runs the Press theme contract tests. Keep `theme/theme.json` aligned with the current Press theme contract.
+
+Theme contract v4 requires public route links to use runtime router href helpers such as `ctx.router.getPostHref()`, `getTabHref()`, `getPostsHref()`, `getSearchHref()`, and `getHomeHref()`. Packaged theme source should not construct public `tab` or `id` query routes directly.
