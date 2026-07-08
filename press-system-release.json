@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
   "pressRepository": "EkilyHQ/Press",
-  "version": "3.4.131",
-  "tag": "v3.4.131",
-  "name": "v3.4.131",
-  "publishedAt": "2026-07-08T08:15:42Z",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.131",
+  "version": "3.4.132",
+  "tag": "v3.4.132",
+  "name": "v3.4.132",
+  "publishedAt": "2026-07-08T11:29:12Z",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.132",
   "asset": {
-    "name": "press-system-v3.4.131.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.131/press-system-v3.4.131.zip",
-    "size": 1977898,
-    "digest": "sha256:3b1fb9b07746202cc3ce74635f6377f8c49f3b2c8b583239b55e1cdf9272793a"
+    "name": "press-system-v3.4.132.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.132/press-system-v3.4.132.zip",
+    "size": 1986886,
+    "digest": "sha256:e7724b10c511a8b00e25ba8ffe7976ac8b8865c1a691fe03c8412952b4965f51"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.130 <3.4.131"
+      ">=3.4.131 <3.4.132"
     ],
     "allowUnknownSource": false,
-    "message": "Update to v3.4.130 before installing v3.4.131."
+    "message": "Update to v3.4.131 before installing v3.4.132."
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.131/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.132/release-intent.json"
   }
 }
