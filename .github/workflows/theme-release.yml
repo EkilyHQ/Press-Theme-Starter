@@ -27,6 +27,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REQUESTED_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || '' }}
+      PRESS_CONTRACT_CHECK_REF: v3.4.130
     steps:
       - name: Checkout theme
         uses: actions/checkout@v6
@@ -133,6 +134,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: EkilyHQ/Press
+          ref: ${{ env.PRESS_CONTRACT_CHECK_REF }}
           path: .press
 
       - name: Validate theme contract

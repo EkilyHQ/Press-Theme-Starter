@@ -157,11 +157,11 @@ node <<'NODE'
 const fs = require('fs');
 const manifest = JSON.parse(fs.readFileSync('theme/theme.json', 'utf8'));
 const example = JSON.parse(fs.readFileSync('theme-release.example.json', 'utf8'));
-if (manifest.engines?.press !== '>=3.4.127 <4.0.0') {
-  throw new Error('theme/theme.json must declare engines.press >=3.4.127 <4.0.0');
+if (manifest.engines?.press !== '>=3.4.130 <4.0.0') {
+  throw new Error('theme/theme.json must declare engines.press >=3.4.130 <4.0.0');
 }
-if (manifest.contractVersion !== 3) {
-  throw new Error('theme/theme.json must declare contractVersion 3');
+if (manifest.contractVersion !== 4) {
+  throw new Error('theme/theme.json must declare contractVersion 4');
 }
 if (example.contractVersion !== manifest.contractVersion) {
   throw new Error('theme-release.example.json must carry the same contractVersion');
@@ -174,6 +174,9 @@ for (const needle of ['themeManifest.engines', 'engines,', 'theme/theme.json mus
   if (!workflow.includes(needle)) {
     throw new Error(`theme release workflow must include ${needle}`);
   }
+}
+if (!workflow.includes('PRESS_CONTRACT_CHECK_REF: v3.4.130') || !workflow.includes('ref: ${{ env.PRESS_CONTRACT_CHECK_REF }}')) {
+  throw new Error('theme release workflow must validate v4 themes against the Press v3.4.130 contract checks');
 }
 const script = fs.readFileSync('scripts/sync-press-system-release.js', 'utf8');
 for (const needle of ['PRESS_SYSTEM_VERSION', 'PRESS_UPGRADE_FROM_JSON', 'marker.upgradeFrom', 'PRESS_RELEASE_INTENT_SOURCE', 'marker.releaseIntent']) {
