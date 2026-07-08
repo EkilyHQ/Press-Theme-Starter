@@ -10,24 +10,24 @@
     "reconciler": "theme-starter-marker-sync"
   },
   "sourceKind": "release-intent",
-  "version": "3.4.129",
-  "tag": "v3.4.129",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.129",
+  "version": "3.4.130",
+  "tag": "v3.4.130",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.130",
   "asset": {
-    "name": "press-system-v3.4.129.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.129/press-system-v3.4.129.zip",
-    "size": 1872718,
-    "digest": "sha256:b82bde51ab86a4cb7a7bc4925f6c4cc73a32b1221ed8de79dcf92da41bdaed63"
+    "name": "press-system-v3.4.130.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.130/press-system-v3.4.130.zip",
+    "size": 1977838,
+    "digest": "sha256:f813be71688ddcc1ae5bdae98a8baa09d2429df7f40a623fe41d71bb90e71895"
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.129/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.130/release-intent.json"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.128 <3.4.129"
+      ">=3.4.129 <3.4.130"
     ],
     "allowUnknownSource": false,
-    "message": "Update to v3.4.128 before installing v3.4.129."
+    "message": "Update to v3.4.129 before installing v3.4.130."
   }
 }
