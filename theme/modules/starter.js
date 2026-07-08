@@ -37,7 +37,7 @@ function getRuntimeRouteHref(params = {}, name, ...args) {
   const helper = router && typeof router[name] === 'function' ? router[name] : null;
   if (!helper) return null;
   try {
-    const href = helper(...args);
+    const href = helper.call(router, ...args);
     return href ? String(href) : null;
   } catch (_) {
     return null;

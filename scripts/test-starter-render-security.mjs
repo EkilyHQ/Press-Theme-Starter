@@ -51,7 +51,10 @@ function assertNoExecutableTitleMarkup(html) {
     container,
     ctx: {
       router: {
-        getPostHref: (location) => `?id=${location}`
+        prefix: '?id=',
+        getPostHref(location) {
+          return `${this.prefix}${location}`;
+        }
       }
     },
     pageEntries: [
