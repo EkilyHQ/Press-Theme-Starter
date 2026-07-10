@@ -10,24 +10,24 @@
     "reconciler": "theme-starter-marker-sync"
   },
   "sourceKind": "release-intent",
-  "version": "3.4.136",
-  "tag": "v3.4.136",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.136",
+  "version": "3.4.137",
+  "tag": "v3.4.137",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.137",
   "asset": {
-    "name": "press-system-v3.4.136.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.136/press-system-v3.4.136.zip",
-    "size": 1981183,
-    "digest": "sha256:3cbff5dc70cd238177e4061e4c42701126d04b910e7967671b63539c067f6a06"
+    "name": "press-system-v3.4.137.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.137/press-system-v3.4.137.zip",
+    "size": 1981172,
+    "digest": "sha256:d318d17c687f0fc4587565a4df40f0539d1c6c82a42022c330ec9a21418b914f"
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.136/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.137/release-intent.json"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.64 <3.4.136"
+      ">=3.4.63 <3.4.137"
     ],
     "allowUnknownSource": false,
-    "message": "Press v3.4.64 through v3.4.135 can update directly to security update v3.4.136."
+    "message": "Press v3.4.63 through v3.4.136 can update directly to Press v3.4.137."
   }
 }
