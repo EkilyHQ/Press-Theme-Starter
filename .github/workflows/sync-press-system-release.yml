@@ -40,6 +40,11 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.18.0'
+
       - name: Resolve Press release
         id: release
         env:
