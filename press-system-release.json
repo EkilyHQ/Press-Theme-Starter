@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
   "pressRepository": "EkilyHQ/Press",
-  "version": "3.4.133",
-  "tag": "v3.4.133",
-  "name": "v3.4.133",
-  "publishedAt": "2026-07-09T10:01:50Z",
-  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.133",
+  "version": "3.4.134",
+  "tag": "v3.4.134",
+  "name": "v3.4.134",
+  "publishedAt": "2026-07-10T12:48:54Z",
+  "releaseUrl": "https://github.com/EkilyHQ/Press/releases/tag/v3.4.134",
   "asset": {
-    "name": "press-system-v3.4.133.zip",
-    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.133/press-system-v3.4.133.zip",
-    "size": 1993796,
-    "digest": "sha256:55a59433437b4c5edcdbf335331d1baa41e19fd37f9ec8f5f4d3b7b834d7e1b1"
+    "name": "press-system-v3.4.134.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.134/press-system-v3.4.134.zip",
+    "size": 1975795,
+    "digest": "sha256:350cb3c289473b36c142a285b6ed51ea1297013387c2506c655323b7f178bdbe"
   },
   "upgradeFrom": {
     "ranges": [
-      ">=3.4.132 <3.4.133"
+      ">=3.4.64 <3.4.134"
     ],
     "allowUnknownSource": false,
-    "message": "Update to v3.4.132 before installing v3.4.133."
+    "message": "Press v3.4.64 through v3.4.133 can update directly to v3.4.134."
   },
   "releaseIntent": {
     "type": "press-release-intent",
-    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.133/release-intent.json"
+    "source": "https://raw.githubusercontent.com/EkilyHQ/Press/release-artifacts/v3.4.134/release-intent.json"
   }
 }
