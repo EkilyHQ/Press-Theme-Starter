@@ -28,11 +28,17 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       REQUESTED_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || '' }}
       PRESS_CONTRACT_CHECK_REF: v3.4.130
+      PRESS_CONTRACT_LEGACY_JS_REF: v3.4.130
     steps:
       - name: Checkout theme
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.18.0'
 
       - name: Read theme repository config
         id: config
@@ -148,7 +154,15 @@ jobs:
           mkdir -p ".press/assets/themes/${slug}"
           rsync -a ./theme/ ".press/assets/themes/${slug}/"
           cd .press
-          node --experimental-default-type=module scripts/test-theme-contracts.js
+          contract_test="scripts/test-theme-contracts.mjs"
+          if [[ ! -f "${contract_test}" ]]; then
+            if [[ "${PRESS_CONTRACT_CHECK_REF}" != "${PRESS_CONTRACT_LEGACY_JS_REF}" ]]; then
+              echo "Press ${PRESS_CONTRACT_CHECK_REF} must provide ${contract_test}; the .js fallback is limited to ${PRESS_CONTRACT_LEGACY_JS_REF}" >&2
+              exit 1
+            fi
+            contract_test="scripts/test-theme-contracts.js"
+          fi
+          node "${contract_test}"
 
       - name: Package theme
         if: steps.plan.outputs.should_release == 'true'

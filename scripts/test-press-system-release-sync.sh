@@ -96,6 +96,27 @@ if grep -E 'actions/(checkout@v4|upload-artifact@v4)' "${workflow}" "${theme_wor
   exit 1
 fi
 
+for node_workflow in "${workflow}" "${theme_workflow}"; do
+  if ! grep -F 'actions/setup-node@v6' "${node_workflow}" >/dev/null || ! grep -F "node-version: '22.18.0'" "${node_workflow}" >/dev/null; then
+    echo "${node_workflow} must pin actions/setup-node@v6 with Node 22.18.0" >&2
+    exit 1
+  fi
+done
+
+legacy_module_flag='--experimental-default-type'
+legacy_module_flag+='=module'
+if grep -F -- "${legacy_module_flag}" "${theme_workflow}" >/dev/null; then
+  echo "theme release workflow must not depend on experimental Node module flags" >&2
+  exit 1
+fi
+
+for needle in 'scripts/test-theme-contracts.mjs' 'scripts/test-theme-contracts.js' 'PRESS_CONTRACT_LEGACY_JS_REF' 'node "${contract_test}"'; do
+  if ! grep -F "${needle}" "${theme_workflow}" >/dev/null; then
+    echo "theme release workflow must include bounded Press contract test selection: ${needle}" >&2
+    exit 1
+  fi
+done
+
 node --check "${script}"
 
 tmp_dir="$(mktemp -d)"
@@ -177,6 +198,9 @@ for (const needle of ['themeManifest.engines', 'engines,', 'theme/theme.json mus
 }
 if (!workflow.includes('PRESS_CONTRACT_CHECK_REF: v3.4.130') || !workflow.includes('ref: ${{ env.PRESS_CONTRACT_CHECK_REF }}')) {
   throw new Error('theme release workflow must validate v4 themes against the Press v3.4.130 contract checks');
+}
+if (!workflow.includes('PRESS_CONTRACT_LEGACY_JS_REF: v3.4.130')) {
+  throw new Error('legacy .js fallback must be bounded to the current Press contract check ref');
 }
 const script = fs.readFileSync('scripts/sync-press-system-release.js', 'utf8');
 for (const needle of ['PRESS_SYSTEM_VERSION', 'PRESS_UPGRADE_FROM_JSON', 'marker.upgradeFrom', 'PRESS_RELEASE_INTENT_SOURCE', 'marker.releaseIntent']) {
