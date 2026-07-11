@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    "scripts/resolve-press-system-release.js",
+    "scripts/sync-press-system-release.js",
+    "scripts/test-press-system-lock.js",
+    "scripts/test-release-intent-resolution.js",
+    "scripts/write-press-system-lock.js",
+    "theme/modules/starter.js",
+    "theme/theme.css"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "decision": "reviewed-exact-fingerprint-baseline-with-zero-growth",
+  "scope": ["theme/**/*.js", "theme/**/*.mjs"],
+  "rationale": "Starter routes all live-DOM markup through one local wrapper. Exact semantic fingerprints classify the wrapper implementation and every caller separately so source-static, escaped, and Press-rendered inputs cannot be conflated or moved without review.",
+  "wrappers": [
+    {
+      "name": "setHtml",
+      "rationale": "setHtml is the Starter render wrapper; each call site is classified by the actual source provenance supplied to it."
+    }
+  ],
+  "expectedKinds": {
+    "html-wrapper-call:setHtml": 5,
+    "innerHTML-write": 1
+  },
+  "approved": [
+    {
+      "path": "theme/modules/starter.js",
+      "owner": "function:renderError",
+      "context": "function:renderError@path:body[10]/body/body[2]/expression",
+      "kind": "html-wrapper-call:setHtml",
+      "fingerprint": "sha256:0d90a10e1396a4897af086ac746730fb807f106a15ddbab8e9ffd9e5d2763bed",
+      "occurrence": 1,
+      "disposition": "static-theme-template",
+      "rationale": "The error view passes only the source-static Page not found heading to the reviewed live-DOM wrapper."
+    },
+    {
+      "path": "theme/modules/starter.js",
+      "owner": "function:renderList",
+      "context": "function:renderList@path:body[7]/body/body[4]/expression",
+      "kind": "html-wrapper-call:setHtml",
+      "fingerprint": "sha256:dbd0c163016926b616531d79c488929956817e739f3989c83b9e2de0aa22cf24",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Each card title and router-produced href is escaped before interpolation; the empty-list fallback is a source-static paragraph."
+    },
+    {
+      "path": "theme/modules/starter.js",
+      "owner": "function:renderLoading",
+      "context": "function:renderLoading@path:body[11]/body/body[2]/expression",
+      "kind": "html-wrapper-call:setHtml",
+      "fingerprint": "sha256:2e77b75ce8676865e6e593ef13580eac812f1e840cd8d29d7b9212b133a45b14",
+      "occurrence": 1,
+      "disposition": "static-theme-template",
+      "rationale": "The loading view passes only the source-static Loading paragraph to the reviewed live-DOM wrapper."
+    },
+    {
+      "path": "theme/modules/starter.js",
+      "owner": "function:renderPost",
+      "context": "function:renderPost@path:body[6]/body/body[4]/expression",
+      "kind": "html-wrapper-call:setHtml",
+      "fingerprint": "sha256:945a601b38b1ed067a0eec9d2c51c010f5a0f233b70953fece3df43faba499c6",
+      "occurrence": 1,
+      "disposition": "press-renderer-output",
+      "rationale": "The heading is escaped by Starter and markdownHtml is supplied by Press's reviewed Markdown rendering boundary before the combined template reaches the wrapper."
+    },
+    {
+      "path": "theme/modules/starter.js",
+      "owner": "function:renderTab",
+      "context": "function:renderTab@path:body[9]/body/body[4]/expression",
+      "kind": "html-wrapper-call:setHtml",
+      "fingerprint": "sha256:0717a92fd2e14c4d8aba01a2edf852ef0e87b8e2687893751b9bf0f831ee10e9",
+      "occurrence": 1,
+      "disposition": "press-renderer-output",
+      "rationale": "The tab heading is escaped by Starter and markdownHtml is supplied by Press's reviewed Markdown rendering boundary before the combined template reaches the wrapper."
+    },
+    {
+      "path": "theme/modules/starter.js",
+      "owner": "function:setHtml",
+      "context": "function:setHtml@path:body[2]/body/body[1]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:7d88951c84b7efde199ed3841836f24e949997fb086fe1013c2cc0183db5e862",
+      "occurrence": 1,
+      "disposition": "press-renderer-output",
+      "rationale": "This is the sole local live-DOM write and does not sanitize by itself; approval depends on the exact policy separately classifying every setHtml caller and forbidding unreviewed wrapper-call growth."
+    }
+  ]
+}

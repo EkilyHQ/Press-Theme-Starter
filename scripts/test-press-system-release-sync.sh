@@ -6,15 +6,31 @@ cd "$(dirname "$0")/.."
 workflow=".github/workflows/sync-press-system-release.yml"
 script="scripts/sync-press-system-release.js"
 theme_workflow=".github/workflows/theme-release.yml"
+quality_workflow=".github/workflows/code-quality.yml"
+quality_package="package.json"
+quality_lock="package-lock.json"
+eslint_config="eslint.config.mjs"
 theme_manifest="theme/theme.json"
 theme_release_example="theme-release.example.json"
 
-for path in "${workflow}" "${script}" "${theme_workflow}" "${theme_manifest}" "${theme_release_example}"; do
+for path in "${workflow}" "${script}" "${theme_workflow}" "${quality_workflow}" "${quality_package}" "${quality_lock}" "${eslint_config}" "${theme_manifest}" "${theme_release_example}"; do
   if [[ ! -f "${path}" ]]; then
     echo "expected ${path} to exist" >&2
     exit 1
   fi
 done
+
+for needle in 'name: Code Quality' 'CODE_QUALITY_BASE_REF:' 'CODE_QUALITY_HEAD_SHA:' 'actions/checkout@v6' 'actions/setup-node@v6' 'node-version: 22.18.0' 'npm ci --ignore-scripts' 'npm run quality'; do
+  if ! grep -F "${needle}" "${quality_workflow}" >/dev/null; then
+    echo "Theme Starter code-quality workflow must include ${needle}" >&2
+    exit 1
+  fi
+done
+
+if grep -E '(write-all|contents:[[:space:]]*write)' "${quality_workflow}" >/dev/null; then
+  echo "Theme Starter code-quality workflow must remain read-only" >&2
+  exit 1
+fi
 
 if ! grep -F 'repository_dispatch:' "${workflow}" >/dev/null; then
   echo "Press system release sync workflow must accept repository_dispatch events" >&2
