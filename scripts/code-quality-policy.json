@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "scope": "Theme Starter first-party theme source and repository tooling",
+  "eslint": {
+    "profile": "@eslint/js recommended",
+    "measuredRules": [
+      {
+        "rule": "no-empty",
+        "decision": "enforced-zero-baseline",
+        "observedDiagnostics": 0,
+        "observedAffectedFiles": 0,
+        "evidence": "The current Starter source has no empty blocks, so the recommended rule remains enabled while the exact evidence probe guards the measured zero."
+      },
+      {
+        "rule": "no-unused-vars",
+        "decision": "accepted-no-action",
+        "observedDiagnostics": 1,
+        "observedAffectedFiles": 1,
+        "evidence": "The sole diagnostic is the conventional catch binding in getRuntimeRouteHref; keeping that compatibility catch unchanged avoids a release-bearing theme-source edit while exact identity prevents movement or growth."
+      },
+      {
+        "rule": "no-useless-assignment",
+        "decision": "enforced-zero-baseline",
+        "observedDiagnostics": 0,
+        "observedAffectedFiles": 0,
+        "evidence": "The current Starter source has no useless assignments, so the recommended rule remains enabled while the exact evidence probe guards the measured zero."
+      }
+    ],
+    "noGrowth": {
+      "mechanism": "merge-base-only-shrinking-exact-diagnostic-baseline",
+      "command": "node scripts/test-eslint-debt-policy.mjs && node scripts/probe-eslint-debt.mjs",
+      "policy": "Root-level and scripts tooling keep every recommended rule enabled. Theme source excludes only the single measured no-unused-vars occurrence; its path, rule, message, full lexical owner, full-file AST path with array ordinals, and normalized diagnostic-context fingerprint must match exactly and may only shrink relative to the merge base. All other recommended diagnostics fail CI."
+    },
+    "inlineConfiguration": {
+      "decision": "forbidden",
+      "mechanism": "linterOptions.noInlineConfig",
+      "proofCommand": "node scripts/test-eslint-policy.mjs",
+      "policy": "Source comments cannot disable or reconfigure ESLint rules. The executable proof loads the real project configuration and confirms a used no-undef directive neither suppresses nor downgrades the severity-2 diagnostic."
+    },
+    "removalCondition": "Remove the no-unused-vars exclusion after an intentional theme cleanup removes the exact catch-binding diagnostic without changing the Press theme contract.",
+    "diagnosticBaseline": {
+      "file": "scripts/eslint-debt-baseline.json",
+      "decision": "exact-owner-context-fingerprint-baseline-with-zero-growth",
+      "initialDiagnostics": 1,
+      "identity": "path, rule, messageId, message, full lexical owner, full-file AST path with array ordinals, normalized diagnostic-context fingerprint, and duplicate occurrence",
+      "bootstrap": "The initial baseline must be a subset of diagnostics independently recomputed from the exact merge-base theme source; a same-count owner or context swap is forbidden."
+    }
+  },
+  "prettier": {
+    "baseline": {
+      "file": "scripts/prettier-baseline.json",
+      "initialFiles": 7
+    },
+    "excludedGeneratedFiles": ["theme-release.example.json", "theme-release.json", "theme/theme.json"],
+    "noGrowth": {
+      "mechanism": "merge-base-shrinking-file-baseline",
+      "baseRefEnvironmentVariable": "CODE_QUALITY_BASE_REF",
+      "headShaEnvironmentVariable": "CODE_QUALITY_HEAD_SHA",
+      "policy": "New candidate files must pass Prettier. A changed legacy file must be formatted and removed from the baseline; only exact-content renames may transfer baseline ownership."
+    }
+  },
+  "htmlSinks": {
+    "decision": "reviewed-exact-fingerprint-baseline-with-zero-growth",
+    "policyFile": "scripts/html-sink-policy.json",
+    "scope": "theme/**/*.js and theme/**/*.mjs",
+    "policy": "Every known HTML write or parser sink is classified by path, full lexical owner, full-file AST path with array ordinals, kind, normalized semantic AST fingerprint, disposition, and rationale. Starter's setHtml wrapper is not a sanitizer: its implementation and all five current callers are classified separately by actual input provenance. The first policy must be a subset of sinks independently recomputed from exact merge-base source; approved keys may then only shrink and established wrapper names cannot be removed or renamed. Opaque computed assignments, loop targets, calls, tags and constructors; wrapper/native/document aliases; dynamic parser MIME values; default-parameter and destructured reflection aliases; bind/call/apply/Reflect.get helper forms; single and bulk descriptor lookup APIs; legacy __lookupSetter__; and opaque payloads or descriptors all fail closed."
+  }
+}

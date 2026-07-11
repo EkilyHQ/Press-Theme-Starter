@@ -15,7 +15,21 @@ assert.equal(manifest.engines.press, '>=3.4.130 <4.0.0');
 assert.equal(releaseExample.contractVersion, 4);
 assert.equal(releaseExample.engines.press, '>=3.4.130 <4.0.0');
 assert.doesNotMatch(source, /[?&](?:tab|id)=/, 'v4 packaged source should use router href helpers for public routes');
-assert.doesNotMatch(source, /getRuntimeRouteHref[\s\S]{0,120}\|\|\s*'#'/, 'v4 route helper null results should not become hash dead links');
+assert.doesNotMatch(
+  source,
+  /getRuntimeRouteHref[\s\S]{0,120}\|\|\s*'#'/,
+  'v4 route helper null results should not become hash dead links'
+);
+assert.equal(
+  [...source.matchAll(/\.innerHTML\s*=/gu)].length,
+  1,
+  'Starter must retain one reviewable live-DOM HTML write inside setHtml'
+);
+assert.match(
+  source,
+  /function setHtml\([\s\S]*?element\.innerHTML\s*=/u,
+  'the sole HTML write must remain owned by setHtml'
+);
 
 function fakeElement() {
   return {
@@ -43,6 +57,7 @@ function assertNoExecutableTitleMarkup(html) {
     markdownHtml: '<p>body</p>'
   });
   assertNoExecutableTitleMarkup(container.innerHTML);
+  assert.match(container.innerHTML, /<p>body<\/p>/u, 'Press-rendered Markdown must remain intact');
 }
 
 {
@@ -57,11 +72,28 @@ function assertNoExecutableTitleMarkup(html) {
         }
       }
     },
-    pageEntries: [
-      ['<img src=x onerror=alert(1)>', { location: 'post/demo.md' }]
-    ]
+    pageEntries: [['<img src=x onerror=alert(1)>', { location: 'post/demo.md' }]]
   });
   assertNoExecutableTitleMarkup(container.innerHTML);
+}
+
+{
+  const container = fakeElement();
+  effects.renderIndexView({
+    container,
+    ctx: {
+      router: {
+        getPostHref: () => 'https://example.test/post/" onclick="alert(1)'
+      }
+    },
+    pageEntries: [['Product', { location: 'post/demo.md' }]]
+  });
+  assert.doesNotMatch(
+    container.innerHTML,
+    /href="[^"]*"\s+onclick=/u,
+    'router-produced hrefs must not break out of their attribute'
+  );
+  assert.match(container.innerHTML, /&quot; onclick=&quot;/u, 'router-produced href quotes must be escaped');
 }
 
 {
@@ -73,11 +105,13 @@ function assertNoExecutableTitleMarkup(html) {
         getPostHref: () => null
       }
     },
-    pageEntries: [
-      ['Product', { location: 'post/demo.md' }]
-    ]
+    pageEntries: [['Product', { location: 'post/demo.md' }]]
   });
-  assert.doesNotMatch(container.innerHTML, /href="(?:#|)"/, 'null post href helpers should not render empty or hash links');
+  assert.doesNotMatch(
+    container.innerHTML,
+    /href="(?:#|)"/,
+    'null post href helpers should not render empty or hash links'
+  );
 }
 
 {
@@ -88,6 +122,7 @@ function assertNoExecutableTitleMarkup(html) {
     markdownHtml: '<p>tab</p>'
   });
   assertNoExecutableTitleMarkup(container.innerHTML);
+  assert.match(container.innerHTML, /<p>tab<\/p>/u, 'Press-rendered static-tab Markdown must remain intact');
 }
 
 console.log('ok - starter render security');

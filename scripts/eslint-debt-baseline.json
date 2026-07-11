@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "decision": "exact-owner-context-fingerprint-baseline-with-zero-growth",
+  "rules": ["no-empty", "no-unused-vars", "no-useless-assignment"],
+  "expectedCounts": {
+    "no-empty": 0,
+    "no-unused-vars": 1,
+    "no-useless-assignment": 0
+  },
+  "diagnostics": [
+    {
+      "path": "theme/modules/starter.js",
+      "rule": "no-unused-vars",
+      "messageId": "unusedVar",
+      "message": "'_' is defined but never used.",
+      "owner": "function:getRuntimeRouteHref",
+      "ownerPath": "body[5]/body/body[3]/handler/param",
+      "fingerprint": "sha256:fb5e244e1ed9a62bc3529a04ba5567e5b63ffba18cb18ebea19d6de9bb3442ce",
+      "occurrence": 1
+    }
+  ]
+}
